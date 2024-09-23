@@ -1,6 +1,6 @@
-package com.example.kondus.Kondus_api.modules.auth.service
+package com.example.kondus.Kondus_api.modules.auth.infra.service
 
-import com.example.kondus.Kondus_api.modules.auth.config.JwtProperties
+import com.example.kondus.Kondus_api.modules.auth.infra.config.JwtProperties
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
