@@ -1,6 +1,6 @@
 package com.example.kondus.Kondus_api.modules.auth.presenter.dto
 
-data class UserDtoRequest(
+data class UserRequestDto(
     val email: String,
     val password: String
 )
