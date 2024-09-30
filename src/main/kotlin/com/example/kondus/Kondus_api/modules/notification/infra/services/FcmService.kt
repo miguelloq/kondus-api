@@ -16,15 +16,16 @@ import com.google.firebase.messaging.Notification
 @Service
 class FCMService {
 
-    @Throws(InterruptedException::class, ExecutionException::class)
-    fun sendMessageToToken(request: NotificationRequestModel) {
+    fun sendMessageToToken(request: NotificationRequestModel) = try{
         val message = getPreconfiguredMessageToToken(request)
         val gson = GsonBuilder().setPrettyPrinting().create()
         val jsonOutput = gson.toJson(message)
-        val response = sendAndGetResponse(message)
+        sendAndGetResponse(message)
+        Unit
+    } catch(e:Exception){
+        print("Fail to send $request \n because $e")
     }
 
-    @Throws(InterruptedException::class, ExecutionException::class)
     private fun sendAndGetResponse(message: Message): String {
         return FirebaseMessaging.getInstance().sendAsync(message).get()
     }
