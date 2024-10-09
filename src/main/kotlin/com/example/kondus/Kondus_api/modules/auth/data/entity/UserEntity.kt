@@ -18,5 +18,6 @@ data class UserEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null,
     val email: String,
     val password: String,
+    val name:String,
     @Enumerated(EnumType.STRING) val role: Role
 )
