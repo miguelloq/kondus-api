@@ -36,15 +36,15 @@ class JwtAuthenticationFilter(
             val foundUser = userDetailsService.loadUserByUsername(email)
 
             if (tokenService.isValid(jwtToken, foundUser)) {
-                updateContext(foundUser, request)
+                updateContext(foundUser, request,jwtToken)
             }
 
             filterChain.doFilter(request, response)
         }
     }
 
-    private fun updateContext(foundUser: UserDetails, request: HttpServletRequest) {
-        val authToken = UsernamePasswordAuthenticationToken(foundUser, null, foundUser.authorities)
+    private fun updateContext(foundUser: UserDetails, request: HttpServletRequest, jwtToken: String) {
+        val authToken = UsernamePasswordAuthenticationToken(foundUser, jwtToken, foundUser.authorities)
         authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
 
         SecurityContextHolder.getContext().authentication = authToken
