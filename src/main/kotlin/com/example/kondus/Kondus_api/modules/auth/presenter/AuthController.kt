@@ -2,8 +2,8 @@ package com.example.kondus.Kondus_api.modules.auth.presenter
 
 import com.example.kondus.Kondus_api.modules.auth.infra.service.AuthenticationServiceImpl
 import com.example.kondus.Kondus_api.modules.auth.infra.service.UserService
-import com.example.kondus.Kondus_api.modules.auth.presenter.dto.AuthRequestDto
-import com.example.kondus.Kondus_api.modules.auth.presenter.dto.AuthResponseDto
+import com.example.kondus.Kondus_api.modules.auth.presenter.dto.LoginRequestDto
+import com.example.kondus.Kondus_api.modules.auth.presenter.dto.LoginResponseDto
 import com.example.kondus.Kondus_api.modules.auth.presenter.dto.UserRequestDto
 import com.example.kondus.Kondus_api.modules.auth.presenter.dto.UserResponseDto
 import com.example.kondus.Kondus_api.modules.auth.presenter.dto.toEntity
@@ -24,7 +24,7 @@ class AuthController(
 ) {
 
     @PostMapping("/login")
-    fun login(@RequestBody request: AuthRequestDto): AuthResponseDto =
+    fun login(@RequestBody request: LoginRequestDto): LoginResponseDto =
         service
             .authentication(request)
 
