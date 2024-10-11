@@ -8,7 +8,8 @@ sealed class LocalModuleException(override val message:String):Exception(message
     }
 
     sealed class Data(override val message:String): LocalModuleException(message) {
-        data class LocalNotFound(override val message:String): Data(message)
+        data object LocalNotFound: Data("The Location id that was used has no record in the database.")
+        data object UserNotFound: Data("The User id that was used has no record in the database.")
     }
 
     data object Unknown: LocalModuleException("Unknown Error")
