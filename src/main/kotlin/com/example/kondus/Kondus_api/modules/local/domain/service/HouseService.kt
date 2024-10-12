@@ -24,8 +24,7 @@ class HouseService(
         dto
             .validateToModel()
             .let {
-                val (databaseId, entity) = it.toEntity()
-                repo.save(entity)
+                val databaseId = repo.save(it.toEntity()).id ?: throw LocalModuleException.Unknown
                 Pair(databaseId, it)
             }
 
@@ -64,17 +63,14 @@ class HouseService(
             .findById(this)
             ?: throw LocalModuleException.Data.LocalNotFound
 
-    fun HouseModel.toEntity(): Pair<Long, HouseEntity> =
+    fun HouseModel.toEntity(): HouseEntity =
         localId
             .toLocalEntity()
             .let {
-                Pair(
-                    it.id ?: throw LocalModuleException.Unknown,
-                    HouseEntity(
-                        description = description,
-                        type = category.key,
-                        local = it
-                    )
+                HouseEntity(
+                    description = description,
+                    type = category.key,
+                    local = it
                 )
             }
 
@@ -83,8 +79,7 @@ class HouseService(
         "Condominium" -> Category.Condominium
         else -> throw LocalModuleException.Validation.Business("The only valid options for type is Apartment or Condominium.")
     }
-
-
+    
     fun CreateHouseRequestDto.validateToModel(): HouseModel {
         if (description == null) throw LocalModuleException.Validation.MissingField("description")
         if (type == null) throw LocalModuleException.Validation.MissingField("type")
