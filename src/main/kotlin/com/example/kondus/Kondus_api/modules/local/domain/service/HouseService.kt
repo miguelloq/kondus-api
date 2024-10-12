@@ -8,6 +8,7 @@ import com.example.kondus.Kondus_api.modules.local.data.repository.LocalReposito
 import com.example.kondus.Kondus_api.modules.local.domain.error.LocalModuleException
 import com.example.kondus.Kondus_api.modules.local.domain.model.Category
 import com.example.kondus.Kondus_api.modules.local.domain.model.HouseModel
+import com.example.kondus.Kondus_api.modules.local.presenter.dto.AssociateToUserRequestDto
 import com.example.kondus.Kondus_api.modules.local.presenter.dto.CreateHouseRequestDto
 import org.springframework.stereotype.Service
 
@@ -17,26 +18,39 @@ typealias LocalId = Long
 class HouseService(
     private val repo: HouseRepository,
     private val localRepo: LocalRepository,
-    private val userRepo: UserRepository
+    private val userRepo: UserRepository,
 ) {
-    fun create(dto: CreateHouseRequestDto): Pair<Long,HouseModel> =
+    fun create(dto: CreateHouseRequestDto): Pair<Long, HouseModel> =
         dto
             .validateToModel()
-            .let{
-                val (databaseId,entity) = it.toEntity()
+            .let {
+                val (databaseId, entity) = it.toEntity()
                 repo.save(entity)
-                Pair(databaseId,it)
+                Pair(databaseId, it)
             }
 
-    fun getHousesFromUser(email:String): List<Pair<Long,HouseModel>> =
+    fun getHousesFromUser(email: String): List<Pair<Long, HouseModel>> =
         userRepo
             .findByEmail(email)
             ?.houses
-            ?.map {Pair(
-                it.id ?: throw LocalModuleException.Unknown,
-                it.toModel()
-            )}
+            ?.map {
+                Pair(
+                    it.id ?: throw LocalModuleException.Unknown,
+                    it.toModel()
+                )
+            }
             ?: throw LocalModuleException.Data.UserNotFound
+
+    fun assoaciateToUser(dto: AssociateToUserRequestDto, email: String) {
+        val userEntity = userRepo.findByEmail(email) ?: throw LocalModuleException.Data.UserNotFound
+        val houseEntity = repo.findById(
+            dto.houseId ?: throw LocalModuleException.Validation.MissingField("houseId")
+        ) ?: throw LocalModuleException.Data.LocalNotFound
+
+        houseEntity.users.add(userEntity)
+
+        repo.save(houseEntity)
+    }
 
     fun HouseEntity.toModel() =
         HouseModel(
@@ -50,34 +64,36 @@ class HouseService(
             .findById(this)
             ?: throw LocalModuleException.Data.LocalNotFound
 
-    fun HouseModel.toEntity(): Pair<Long,HouseEntity> =
+    fun HouseModel.toEntity(): Pair<Long, HouseEntity> =
         localId
             .toLocalEntity()
-            .let{
+            .let {
                 Pair(
                     it.id ?: throw LocalModuleException.Unknown,
                     HouseEntity(
                         description = description,
                         type = category.key,
                         local = it
-                    ))}
+                    )
+                )
+            }
 
-    fun String.toHouseCategory(): Category = when(this){
+    fun String.toHouseCategory(): Category = when (this) {
         "Apartment" -> Category.Apartment
         "Condominium" -> Category.Condominium
         else -> throw LocalModuleException.Validation.Business("The only valid options for type is Apartment or Condominium.")
     }
 
 
-    fun CreateHouseRequestDto.validateToModel(): HouseModel{
-        if(description==null) throw LocalModuleException.Validation.MissingField("description")
-        if(type==null) throw LocalModuleException.Validation.MissingField("type")
-        if(localId==null) throw LocalModuleException.Validation.MissingField("localId")
+    fun CreateHouseRequestDto.validateToModel(): HouseModel {
+        if (description == null) throw LocalModuleException.Validation.MissingField("description")
+        if (type == null) throw LocalModuleException.Validation.MissingField("type")
+        if (localId == null) throw LocalModuleException.Validation.MissingField("localId")
 
-        if(description.isEmpty()) throw LocalModuleException.Validation.Business("Description cannot be empty.")
+        if (description.isEmpty()) throw LocalModuleException.Validation.Business("Description cannot be empty.")
 
         val category = type.toHouseCategory()
 
-        return HouseModel(description,category,localId)
+        return HouseModel(description, category, localId)
     }
 }
