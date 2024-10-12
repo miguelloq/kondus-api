@@ -4,9 +4,9 @@ import com.example.kondus.Kondus_api.modules.core.services.AuthService
 import com.example.kondus.Kondus_api.modules.local.domain.error.LocalModuleException
 import com.example.kondus.Kondus_api.modules.local.domain.model.HouseModel
 import com.example.kondus.Kondus_api.modules.local.domain.service.HouseService
-import com.example.kondus.Kondus_api.modules.local.presenter.dto.AssociateToUserRequestDto
-import com.example.kondus.Kondus_api.modules.local.presenter.dto.CreateHouseRequestDto
-import com.example.kondus.Kondus_api.modules.local.presenter.dto.HouseResponseDto
+import com.example.kondus.Kondus_api.modules.local.presenter.dto.house.AssociateToUserRequestDto
+import com.example.kondus.Kondus_api.modules.local.presenter.dto.house.CreateHouseRequestDto
+import com.example.kondus.Kondus_api.modules.local.presenter.dto.house.HouseResponseDto
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -50,7 +50,7 @@ class HouseController(
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     fun associateToUser(request: AssociateToUserRequestDto) = try {
         service
-            .assoaciateToUser(
+            .associateToUser(
                 request,
                 authService.getEmail()
             )

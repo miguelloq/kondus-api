@@ -8,8 +8,8 @@ import com.example.kondus.Kondus_api.modules.local.data.repository.LocalReposito
 import com.example.kondus.Kondus_api.modules.local.domain.error.LocalModuleException
 import com.example.kondus.Kondus_api.modules.local.domain.model.Category
 import com.example.kondus.Kondus_api.modules.local.domain.model.HouseModel
-import com.example.kondus.Kondus_api.modules.local.presenter.dto.AssociateToUserRequestDto
-import com.example.kondus.Kondus_api.modules.local.presenter.dto.CreateHouseRequestDto
+import com.example.kondus.Kondus_api.modules.local.presenter.dto.house.AssociateToUserRequestDto
+import com.example.kondus.Kondus_api.modules.local.presenter.dto.house.CreateHouseRequestDto
 import org.springframework.stereotype.Service
 
 typealias LocalId = Long
@@ -41,7 +41,7 @@ class HouseService(
             }
             ?: throw LocalModuleException.Data.UserNotFound
 
-    fun assoaciateToUser(dto: AssociateToUserRequestDto, email: String) {
+    fun associateToUser(dto: AssociateToUserRequestDto, email: String) {
         val userEntity = userRepo.findByEmail(email) ?: throw LocalModuleException.Data.UserNotFound
         val houseEntity = repo.findById(
             dto.houseId ?: throw LocalModuleException.Validation.MissingField("houseId")
