@@ -6,8 +6,7 @@ import com.example.kondus.Kondus_api.modules.auth.data.entity.UserEntity
 data class UserRequestDto(
     val email: String,
     val password: String,
-    val name:String,
-)
+    val name: String,
 
 fun UserRequestDto.toEntity(): UserEntity = UserEntity(
     email = email,
