@@ -17,13 +17,13 @@ class SecurityConfig(private val authenticationProvider: AuthenticationProvider)
     @Bean
     fun securityFilterChain(
         http: HttpSecurity,
-        jwtAuthenticationFilter: JwtAuthenticationFilter
+        jwtAuthenticationFilter: JwtAuthenticationFilter,
     ): DefaultSecurityFilterChain =
         http
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/api/auth/**","/error")
+                    .requestMatchers("/api/auth/register", "/api/auth/login", "/error")
                     .permitAll()
                     //.requestMatchers("api/user**")
                     //.hasRole("ADMIN")

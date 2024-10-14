@@ -7,10 +7,11 @@ data class UserRequestDto(
     val email: String,
     val password: String,
     val name: String,
+)
 
 fun UserRequestDto.toEntity(): UserEntity = UserEntity(
     email = email,
     name = name,
-    password =  password,
+    password = password,
     role = Role.DEFAULT
 )
