@@ -17,7 +17,6 @@ data class HouseEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null,
     @ManyToOne @JoinColumn(name = "local_id", nullable = false) val local: LocalEntity,
     val description:String,
-    val type:String,
     @ManyToMany
     @JoinTable(
         name = "users_houses",

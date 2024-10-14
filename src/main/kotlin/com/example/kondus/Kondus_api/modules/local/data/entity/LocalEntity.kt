@@ -18,5 +18,6 @@ data class LocalEntity (
     val number:Int,
     @Column(length = cepMaxLength) val cep:String,
     @Column(length = nameMaxLength) val name:String,
-    val description:String
+    val description:String,
+    val type:String
 )

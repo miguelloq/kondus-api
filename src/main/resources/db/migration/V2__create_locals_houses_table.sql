@@ -4,14 +4,14 @@ create table locals (
     number int,
     cep char(8),
     name varchar(20),
-    description varchar(255)
+    description varchar(255),
+    type varchar(255) not null,
 );
 
 create table houses(
     id serial primary key,
     local_id serial not null,
     description varchar(255) not null,
-    type varchar(255) not null,
     foreign key (local_id) references locals(id) on delete cascade
 );
 
