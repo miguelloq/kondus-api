@@ -8,6 +8,7 @@ import com.example.kondus.Kondus_api.modules.local.presenter.dto.house.Associate
 import com.example.kondus.Kondus_api.modules.local.presenter.dto.house.CreateHouseRequestDto
 import com.example.kondus.Kondus_api.modules.local.presenter.dto.house.HouseResponseDto
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -47,13 +48,13 @@ class HouseController(
     }
 
     @PutMapping("/user")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    fun associateToUser(request: AssociateToUserRequestDto) = try {
+    fun associateToUser(@RequestBody request: AssociateToUserRequestDto): ResponseEntity<Unit> = try {
         service
             .associateToUser(
                 request,
                 authService.getEmail()
             )
+            .let { ResponseEntity.noContent().build() }
     } catch (e: LocalModuleException) {
         throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
     } catch (e: Exception) {
