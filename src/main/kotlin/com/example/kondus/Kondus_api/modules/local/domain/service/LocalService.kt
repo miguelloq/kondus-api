@@ -5,6 +5,7 @@ import com.example.kondus.Kondus_api.modules.local.data.entity.cepMaxLength
 import com.example.kondus.Kondus_api.modules.local.data.entity.nameMaxLength
 import com.example.kondus.Kondus_api.modules.local.data.repository.LocalRepository
 import com.example.kondus.Kondus_api.modules.local.domain.error.LocalModuleException
+import com.example.kondus.Kondus_api.modules.local.domain.model.Category
 import com.example.kondus.Kondus_api.modules.local.domain.model.LocalModel
 import com.example.kondus.Kondus_api.modules.local.presenter.dto.local.CreateLocalRequestDto
 import org.springframework.stereotype.Service
@@ -27,6 +28,7 @@ class LocalService(
         number = number,
         cep = cep.toString(),
         name = name,
+        type = category.key,
         description = description
     )
 
@@ -36,18 +38,28 @@ class LocalService(
         if (cep == null) throw LocalModuleException.Validation.MissingField("cep")
         if (name == null) throw LocalModuleException.Validation.MissingField("name")
         if (description == null) throw LocalModuleException.Validation.MissingField("description")
+        if (type == null) throw LocalModuleException.Validation.MissingField("type")
+
+        val category = type.toHouseCategory()
 
         return LocalModel(
             street = street,
             number = number,
             cep = cep,
             name = name,
+            category = category,
             description = description
         )
     }
 
+    fun String.toHouseCategory(): Category = when (this) {
+        "Apartment" -> Category.Apartment
+        "Condominium" -> Category.Condominium
+        else -> throw LocalModuleException.Validation.Business("The only valid options for type is Apartment or Condominium.")
+    }
+
     fun LocalModel.validate(){
-        if(number>99999 || 0>number) throw LocalModuleException.Validation.Business("Number of local invalid. Chose a number between a range of 0 and 99999.")
+        if(number>99999 || 0>number) throw LocalModuleException.Validation.Business("Number invalid. Chose a number between a range of 0 and 99999.")
         if(cep.toString().length>cepMaxLength || 0>cep) throw LocalModuleException.Validation.Business("Cep invalid. Cep cannot be negative and cep have a limit digits of 8.")
         if(name.length>=nameMaxLength) throw LocalModuleException.Validation.Business("Name invalid. Name size cannot be more than 20 letters.")
     }
