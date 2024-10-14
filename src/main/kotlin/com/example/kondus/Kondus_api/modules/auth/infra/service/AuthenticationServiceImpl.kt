@@ -1,8 +1,8 @@
 package com.example.kondus.Kondus_api.modules.auth.infra.service
 
 import com.example.kondus.Kondus_api.modules.auth.infra.config.JwtProperties
-import com.example.kondus.Kondus_api.modules.auth.presenter.dto.AuthRequestDto
-import com.example.kondus.Kondus_api.modules.auth.presenter.dto.AuthResponseDto
+import com.example.kondus.Kondus_api.modules.auth.presenter.dto.LoginRequestDto
+import com.example.kondus.Kondus_api.modules.auth.presenter.dto.LoginResponseDto
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Service
@@ -16,7 +16,7 @@ class AuthenticationServiceImpl(
     private val tokenService: TokenService,
     private val jwtProperties: JwtProperties
 ) {
-    fun authentication(authRequest: AuthRequestDto): AuthResponseDto {
+    fun authentication(authRequest: LoginRequestDto): LoginResponseDto {
         authManager.authenticate(
             UsernamePasswordAuthenticationToken(
                 authRequest.email,
@@ -31,6 +31,6 @@ class AuthenticationServiceImpl(
             expirationDate = Date(System.currentTimeMillis() + jwtProperties.accessTokenExpiration)
         )
 
-        return AuthResponseDto(accessToken)
+        return LoginResponseDto(accessToken)
     }
 }
