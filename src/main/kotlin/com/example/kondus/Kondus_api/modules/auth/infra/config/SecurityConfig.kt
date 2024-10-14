@@ -23,9 +23,7 @@ class SecurityConfig(private val authenticationProvider: AuthenticationProvider)
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/api/auth", "api/auth/refresh", "/error")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/user")
+                    .requestMatchers("/api/auth/**","/error")
                     .permitAll()
                     //.requestMatchers("api/user**")
                     //.hasRole("ADMIN")
