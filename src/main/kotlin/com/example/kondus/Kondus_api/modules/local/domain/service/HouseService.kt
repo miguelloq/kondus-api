@@ -31,20 +31,22 @@ class HouseService(
     fun getHousesFromUser(email: String): List<Pair<Long, HouseModel>> =
         userRepo
             .findByEmail(email)
-            ?.houses
-            ?.map {
+            .let{it ?: throw LocalModuleException.Data.UserNotFound}
+            .houses
+            .map {
                 Pair(
                     it.id ?: throw LocalModuleException.Unknown,
                     it.toModel()
                 )
             }
-            ?: throw LocalModuleException.Data.UserNotFound
 
     fun associateToUser(dto: AssociateToUserRequestDto, email: String) {
         val userEntity = userRepo.findByEmail(email) ?: throw LocalModuleException.Data.UserNotFound
-        val houseEntity = repo.findById(
-            dto.houseId ?: throw LocalModuleException.Validation.MissingField("houseId")
-        ) ?: throw LocalModuleException.Data.LocalNotFound
+
+        val houseId = dto.houseId ?: throw LocalModuleException.Validation.MissingField("houseId")
+        val houseEntity = repo.findById(houseId) ?: throw LocalModuleException.Data.LocalNotFound
+
+        if(userEntity.houses.contains(houseEntity)) throw LocalModuleException.Data.UserAlreadyIsAssociateWithLocal
 
         houseEntity.users.add(userEntity)
 

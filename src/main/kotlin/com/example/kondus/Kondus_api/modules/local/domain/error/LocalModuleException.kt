@@ -10,6 +10,7 @@ sealed class LocalModuleException(override val message:String):Exception(message
     sealed class Data(override val message:String): LocalModuleException(message) {
         data object LocalNotFound: Data("The Location id that was used has no record in the database.")
         data object UserNotFound: Data("The User id that was used has no record in the database.")
+        data object UserAlreadyIsAssociateWithLocal : Data("The user cannot be linked to a location that he is already previously linked to.")
     }
 
     data object Unknown: LocalModuleException("Unknown Error")
