@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
-const val numberMaxLength = 10
 const val cepMaxLength = 8
 const val nameMaxLength = 20
 
@@ -16,7 +15,7 @@ const val nameMaxLength = 20
 data class LocalEntity (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null,
     val street:String,
-    @Column(length = numberMaxLength) val number:String,
+    val number:Int,
     @Column(length = cepMaxLength) val cep:String,
     @Column(length = nameMaxLength) val name:String,
     val description:String

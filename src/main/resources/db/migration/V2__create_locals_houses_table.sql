@@ -1,7 +1,7 @@
 create table locals (
     id serial primary key,
     street varchar(255),
-    number varchar(10),
+    number int,
     cep char(8),
     name varchar(20),
     description varchar(255)
