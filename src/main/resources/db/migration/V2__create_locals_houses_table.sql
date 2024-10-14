@@ -18,7 +18,7 @@ create table houses(
 create table users_houses(
     user_id serial not null,
     house_id serial not null,
-    primary key (user_id,casa_id),
+    primary key (user_id,house_id),
     foreign key (user_id) references users(id) on delete cascade,
     foreign key (house_id) references houses(id) on delete cascade
 )
