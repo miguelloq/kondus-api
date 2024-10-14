@@ -48,6 +48,7 @@ class UserController(private val service: UserService) {
 
 
     fun UserRequestDto.toEntity(): UserEntity = UserEntity(
+        name = name,
         email = email,
         password = password,
         role = Role.DEFAULT

@@ -20,7 +20,7 @@ data class UserEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null,
     val email: String,
     val password: String,
-    val name:String,
+    val name: String,
     @Enumerated(EnumType.STRING) val role: Role,
-    @ManyToMany(mappedBy = "usuarios") val houses: MutableList<HouseEntity> = mutableListOf()
+    @ManyToMany(mappedBy = "users") val houses: MutableList<HouseEntity> = mutableListOf(),
 )
