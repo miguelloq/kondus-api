@@ -6,20 +6,22 @@ import com.example.kondus.Kondus_api.modules.local.domain.service.LocalService
 import com.example.kondus.Kondus_api.modules.local.presenter.dto.local.CreateLocalRequestDto
 import com.example.kondus.Kondus_api.modules.local.presenter.dto.local.CreateLocalResponseDto
 import org.springframework.http.HttpStatus
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
-@Controller
+@RestController
+@RequestMapping("api/local")
 class LocalController(
     private val service: LocalService,
 ) {
     @PostMapping
-    fun create(@RequestBody request: CreateLocalRequestDto) = try {
+    fun create(@RequestBody request: CreateLocalRequestDto): CreateLocalResponseDto = try {
         service
             .create(request)
-
+            .toCreateResponseDto()
     } catch (e: LocalModuleException) {
         throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
     } catch (e: Exception) {
