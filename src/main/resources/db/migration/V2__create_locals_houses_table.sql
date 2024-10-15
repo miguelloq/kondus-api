@@ -5,7 +5,7 @@ create table locals (
     cep char(8),
     name varchar(20),
     description varchar(255),
-    type varchar(255) not null,
+    type varchar(255) not null
 );
 
 create table houses(

@@ -67,6 +67,5 @@ class HouseController(
             id = first,
             localId = second.localId,
             description = second.description,
-            type = second.category.key
         )
 }
