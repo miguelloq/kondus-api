@@ -20,7 +20,7 @@ class ItemController(
     @GetMapping
     fun getAllItemsFromUser(): List<ItemResponseDto> = try {
         val email = authService.getEmail()
-        val items = service.getAllSalesFromUser(email) + service.getAllRentsFromUser(email)
+        val items = service.getAllItemsFromUser(email)
 
         items.map { it.toResponse() }
 

@@ -1,7 +1,5 @@
 package com.example.kondus.Kondus_api.modules.item.domain.model
 
-import com.example.kondus.Kondus_api.modules.item.domain.model.CategoryInfo
-
 sealed class CategoryInfo(val key: String) {
     data object Rent : CategoryInfo("Rent")
     data class Sale(val price: Double) : CategoryInfo("Sale")
