@@ -33,13 +33,19 @@ class ItemController(
     @PostMapping("/rent")
     fun createRent(@RequestBody request: RentRequestDto): Long = itemCatching {
         service
-            .createRent(request)
+            .createRent(
+                dto = request,
+                ownerEmail = authService.getEmail()
+            )
     }
 
     @PostMapping("/sale")
     fun createSale(@RequestBody request: SaleRequestDto): Long = itemCatching {
         service
-            .createSale(request)
+            .createSale(
+                dto = request,
+                ownerEmail = authService.getEmail()
+            )
     }
 
     @GetMapping

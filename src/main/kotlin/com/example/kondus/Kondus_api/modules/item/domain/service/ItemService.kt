@@ -5,8 +5,8 @@ import com.example.kondus.Kondus_api.modules.item.presenter.dto.item.RentRequest
 import com.example.kondus.Kondus_api.modules.item.presenter.dto.item.SaleRequestDto
 
 interface ItemService {
-    fun createSale(dto: SaleRequestDto): Long
-    fun createRent(dto: RentRequestDto): Long
+    fun createSale(dto: SaleRequestDto, ownerEmail: String): Long
+    fun createRent(dto: RentRequestDto, ownerEmail: String): Long
     fun getAllRentsFromUser(email: String): List<ItemModel>
     fun getAllSalesFromUser(email: String): List<ItemModel>
     fun getAllItemsFromUser(email: String): List<ItemModel>
