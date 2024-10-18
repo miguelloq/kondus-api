@@ -8,7 +8,12 @@ sealed class ItemModuleException(override val message: String) : Exception(messa
     }
 
     sealed class Data(override val message: String) : ItemModuleException(message) {
-        data object UserNotFound : Data("The User id that was used has no record in the database.")
+        data object UserNotFound: Data("The User id that was used has no record in the database.")
+        data object ItemNotFound: Data("The Item id that was used has no record in the database.")
+    }
+
+    sealed class Business(override val message: String) : ItemModuleException(message) {
+        data object ItemAlreadyRegistred : Data("The product has already been loaned or sold.")
     }
 
     data object Unknown : ItemModuleException("Unknown Error")
