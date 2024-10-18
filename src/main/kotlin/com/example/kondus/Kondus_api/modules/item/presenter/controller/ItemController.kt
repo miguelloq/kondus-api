@@ -2,8 +2,9 @@ package com.example.kondus.Kondus_api.modules.item.presenter.controller
 
 import com.example.kondus.Kondus_api.modules.core.services.AuthService
 import com.example.kondus.Kondus_api.modules.item.domain.error.ItemModuleException
-import com.example.kondus.Kondus_api.modules.item.domain.service.ItemService
+import com.example.kondus.Kondus_api.modules.item.domain.service.GetItemService
 import com.example.kondus.Kondus_api.modules.item.domain.model.ItemModel
+import com.example.kondus.Kondus_api.modules.item.domain.service.CreateItemService
 import com.example.kondus.Kondus_api.modules.item.presenter.dto.item.ItemResponseDto
 import com.example.kondus.Kondus_api.modules.item.presenter.dto.item.RentRequestDto
 import com.example.kondus.Kondus_api.modules.item.presenter.dto.item.SaleRequestDto
@@ -18,7 +19,8 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 @RequestMapping("api/item")
 class ItemController(
-    private val service: ItemService,
+    private val getItemService: GetItemService,
+    private val createItemService: CreateItemService,
     private val authService: AuthService,
 ) {
 
@@ -32,7 +34,7 @@ class ItemController(
 
     @PostMapping("/rent")
     fun createRent(@RequestBody request: RentRequestDto): Long = itemCatching {
-        service
+        createItemService
             .createRent(
                 dto = request,
                 ownerEmail = authService.getEmail()
@@ -41,7 +43,7 @@ class ItemController(
 
     @PostMapping("/sale")
     fun createSale(@RequestBody request: SaleRequestDto): Long = itemCatching {
-        service
+        createItemService
             .createSale(
                 dto = request,
                 ownerEmail = authService.getEmail()
@@ -51,7 +53,7 @@ class ItemController(
     @GetMapping
     fun getAllItemsFromUser(): List<ItemResponseDto> = itemCatching {
         val email = authService.getEmail()
-        val items = service.getAllItemsFromUser(email)
+        val items = getItemService.allFromUser(email)
 
         items.map { it.toResponse() }
     }
@@ -59,22 +61,22 @@ class ItemController(
     @GetMapping("/rent")
     fun getAllRentsFromUser(): List<ItemResponseDto>  = itemCatching {
         val email = authService.getEmail()
-        service
-            .getAllRentsFromUser(email)
+        getItemService
+            .allRentsFromUser(email)
             .map { it.toResponse() }
     }
 
     @GetMapping("/sale")
     fun getAllSalesFromUser(): List<ItemResponseDto> = itemCatching {
-        service
-            .getAllSalesFromUser(authService.getEmail())
+        getItemService
+            .allSalesFromUser(authService.getEmail())
             .map { it.toResponse() }
     }
 
     @GetMapping("/local")
     fun getAllItemsFromLocal(): List<ItemResponseDto> = itemCatching {
-        service
-            .getAllItemsFromUserLocal(authService.getEmail())
+        getItemService
+            .allFromUserLocal(authService.getEmail())
             .map { (itemId, item) -> item.toResponse(itemId) }
     }
 

@@ -9,14 +9,11 @@ import com.example.kondus.Kondus_api.modules.item.domain.model.CategoryInfo
 import com.example.kondus.Kondus_api.modules.item.domain.model.ItemModel
 import com.example.kondus.Kondus_api.modules.item.presenter.dto.item.RentRequestDto
 import com.example.kondus.Kondus_api.modules.item.presenter.dto.item.SaleRequestDto
-import com.example.kondus.Kondus_api.modules.local.data.repository.HouseRepository
 
-
-class ItemServiceImpl(
+class CreateItemServiceImpl(
     val repo: ItemRepository,
     val userRepo: UserRepository,
-    val houseRepo: HouseRepository
-) : ItemService {
+): CreateItemService {
 
     override fun createSale(dto: SaleRequestDto, ownerEmail: String): Long =
         ownerEmail
@@ -24,7 +21,8 @@ class ItemServiceImpl(
             .let{
                 val model = dto.toModel(it.id ?: throw ItemModuleException.Unknown)
                 model.validate()
-                model.toEntity(it)
+                val entity = model.toEntity(it)
+                repo.save(entity)
             }
             .let{it.id ?: throw ItemModuleException.Unknown}
 
@@ -34,43 +32,10 @@ class ItemServiceImpl(
             .let{
                 val model = dto.toModel(it.id ?: throw ItemModuleException.Unknown)
                 model.validate()
-                model.toEntity(it)
+                val entity = model.toEntity(it)
+                repo.save(entity)
             }
             .let{it.id ?: throw ItemModuleException.Unknown}
-
-    override fun getAllRentsFromUser(email: String): List<ItemModel> =
-        getAllItemsFromUser(email)
-            .filter { it.categoryInfo is CategoryInfo.Rent }
-
-
-    override fun getAllSalesFromUser(email: String): List<ItemModel> =
-        getAllItemsFromUser(email)
-            .filter { it.categoryInfo is CategoryInfo.Sale }
-
-    override fun getAllItemsFromUser(email: String): List<ItemModel> =
-        userRepo
-            .findByEmail(email)
-            .let { it ?: throw ItemModuleException.Data.UserNotFound }
-            .let { repo.findAllByUser(it) }
-            .map { it.toModel() }
-
-    override fun getAllItemsFromUserLocal(email: String): List<Pair<Long, ItemModel>> =
-        userRepo
-            .findByEmail(email)
-            .let { it ?: throw ItemModuleException.Data.UserNotFound }
-            .houses
-            .map { it.local }
-            .flatMap{ houseRepo.findAllByLocal(it) }
-            .flatMap{ it.users }
-            .flatMap{ repo.findAllByUser(it) }
-            .map { Pair(it.id ?: throw ItemModuleException.Unknown,it.toModel()) }
-
-
-    fun ItemEntity.toModel() = ItemModel(
-        description = description,
-        ownerId = user.id ?: throw ItemModuleException.Unknown,
-        categoryInfo = if(price==null) CategoryInfo.Rent else CategoryInfo.Sale(price)
-    )
 
     fun SaleRequestDto.toModel(ownerId: Long) = ItemModel(
         description = description ?: throw ItemModuleException.Validation.MissingField("description"),
