@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface RegistrationRepository: JpaRepository<RegistrationEntity,String>{
     fun findById(id:Long): RegistrationEntity?
-    fun findByItem(item: ItemEntity): ItemEntity?
+    fun findByItem(item: ItemEntity): List<RegistrationEntity>
 }
