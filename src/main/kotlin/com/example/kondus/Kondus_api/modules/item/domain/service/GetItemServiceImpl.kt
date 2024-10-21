@@ -8,8 +8,9 @@ import com.example.kondus.Kondus_api.modules.item.domain.error.ItemModuleExcepti
 import com.example.kondus.Kondus_api.modules.item.domain.model.CategoryInfo
 import com.example.kondus.Kondus_api.modules.item.domain.model.ItemModel
 import com.example.kondus.Kondus_api.modules.local.data.repository.HouseRepository
+import org.springframework.stereotype.Service
 
-
+@Service
 class GetItemServiceImpl(
     val repo: ItemRepository,
     val authService: AuthService,
