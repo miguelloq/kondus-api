@@ -1,6 +1,7 @@
 package com.example.kondus.Kondus_api.modules.item.domain.service
 
 import com.example.kondus.Kondus_api.modules.auth.data.repository.UserRepository
+import com.example.kondus.Kondus_api.modules.core.services.AuthService
 import com.example.kondus.Kondus_api.modules.item.data.entity.ItemEntity
 import com.example.kondus.Kondus_api.modules.item.data.repository.ItemRepository
 import com.example.kondus.Kondus_api.modules.item.domain.error.ItemModuleException
@@ -11,37 +12,34 @@ import com.example.kondus.Kondus_api.modules.local.data.repository.HouseReposito
 
 class GetItemServiceImpl(
     val repo: ItemRepository,
-    val userRepo: UserRepository,
+    val authService: AuthService,
     val houseRepo: HouseRepository,
 ) : GetItemService {
 
     override fun allRentsFromUser(email: String): List<ItemModel> =
-        allFromUser(email)
-            .filter { it.categoryInfo is CategoryInfo.Rent }
-
+        repo
+            .findRentsByUser(authService.getUserByEmail(email){ throw ItemModuleException.Data.UserNotFound })
+            .map{ it.toModel() }
 
     override fun allSalesFromUser(email: String): List<ItemModel> =
-        allFromUser(email)
-            .filter { it.categoryInfo is CategoryInfo.Sale }
+        repo
+            .findSalesByUser(authService.getUserByEmail(email){ throw ItemModuleException.Data.UserNotFound })
+            .map{ it.toModel() }
 
     override fun allFromUser(email: String): List<ItemModel> =
-        userRepo
-            .findByEmail(email)
-            .let { it ?: throw ItemModuleException.Data.UserNotFound }
-            .let { repo.findAllByUser(it) }
-            .map { it.toModel() }
+        repo
+            .findAllByUser(authService.getUserByEmail(email){ throw ItemModuleException.Data.UserNotFound })
+            .map{ it.toModel() }
 
     override fun allFromUserLocal(email: String): List<Pair<Long, ItemModel>> =
-        userRepo
-            .findByEmail(email)
-            .let { it ?: throw ItemModuleException.Data.UserNotFound }
+        authService
+            .getUserByEmail(email){ throw ItemModuleException.Data.UserNotFound }
             .houses
             .map { it.local }
             .flatMap{ houseRepo.findAllByLocal(it) }
             .flatMap{ it.users }
             .flatMap{ repo.findAllByUser(it) }
             .map { Pair(it.id ?: throw ItemModuleException.Unknown,it.toModel()) }
-
 
     fun ItemEntity.toModel() = ItemModel(
         description = description,
