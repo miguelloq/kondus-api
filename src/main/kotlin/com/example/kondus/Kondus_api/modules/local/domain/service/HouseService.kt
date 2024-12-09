@@ -1,6 +1,8 @@
 package com.example.kondus.Kondus_api.modules.local.domain.service
 
 import com.example.kondus.Kondus_api.modules.auth.data.repository.UserRepository
+import com.example.kondus.Kondus_api.modules.core.services.AuthService
+import com.example.kondus.Kondus_api.modules.item.domain.error.ItemModuleException
 import com.example.kondus.Kondus_api.modules.local.data.entity.HouseEntity
 import com.example.kondus.Kondus_api.modules.local.data.entity.LocalEntity
 import com.example.kondus.Kondus_api.modules.local.data.repository.HouseRepository
@@ -18,7 +20,7 @@ typealias LocalId = Long
 class HouseService(
     private val repo: HouseRepository,
     private val localRepo: LocalRepository,
-    private val userRepo: UserRepository,
+    private val authService: AuthService
 ) {
     fun create(dto: CreateHouseRequestDto): Pair<Long, HouseModel> =
         dto
@@ -29,9 +31,8 @@ class HouseService(
             }
 
     fun getHousesFromUser(email: String): List<Pair<Long, HouseModel>> =
-        userRepo
-            .findByEmail(email)
-            .let{it ?: throw LocalModuleException.Data.UserNotFound}
+        authService
+            .getUserByEmail(email){ throw LocalModuleException.Data.UserNotFound }
             .houses
             .map {
                 Pair(
@@ -41,7 +42,7 @@ class HouseService(
             }
 
     fun associateToUser(dto: AssociateToUserRequestDto, email: String) {
-        val userEntity = userRepo.findByEmail(email) ?: throw LocalModuleException.Data.UserNotFound
+        val userEntity = authService.getUserByEmail(email){ throw LocalModuleException.Data.UserNotFound }
 
         val houseId = dto.houseId ?: throw LocalModuleException.Validation.MissingField("houseId")
         val houseEntity = repo.findById(houseId) ?: throw LocalModuleException.Data.LocalNotFound
